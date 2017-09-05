@@ -27,3 +27,8 @@
                         p
                         q
                         (- count 1)))))
+
+(define (fib-old n)
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (else (+ (fib-old (- n 1)) (fib-old (- n 2))))))
