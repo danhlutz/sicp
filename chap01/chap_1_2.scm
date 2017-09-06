@@ -74,3 +74,27 @@
 
 (define (prime? n)
   (= n (smallest-divisor n)))
+
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square (expmod base (/ exp 2) m))
+                    m))
+        (else
+          (remainder (* base (expmod base (- exp 1) m))
+                     m))))
+
+; simulation 
+; (expmod 12 3 5)
+; (remainder (* 12 (expmod 12 2 5)) 5)
+; (remainder (* 12 (remainder (square (expmod 12 1 5)) 5)) 5)
+; (remainder (* 12 (remainder (square (remainder (* 12 (expmod 12 0 5)
+;                                                ) 5)) 5)) 5)
+; (remainder (* 12 (remainder (square (remainder (* 12 1)
+;                                                5)) 5)) 5)
+; (remainder (* 12 (remainder (square 2) 5)) 5)
+; (remainder (* 12 (remainder 4 5)) 5)
+; (remainder (* 12 4) 5)
+; (remainder 48 5)
+; 3
