@@ -28,6 +28,17 @@
                         q
                         (- count 1)))))
 
+
+; simulation of fast-fib
+; (fib 9)
+; (fib-iter 1 0 0 1 9)
+; (fib-iter 1 1 0 1 8)
+; (fib-iter 1 1 1 1 4)
+; (fib-iter 1 1 2 3 2)
+; (fib-iter 1 1 13 21 1)
+; (fib-iter 47 34 13 21 0)
+; 34
+
 (define (fib-old n)
   (cond ((= n 0) 0)
         ((= n 1) 1)
