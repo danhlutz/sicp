@@ -1,0 +1,48 @@
+(define (square n)
+  (* n n))
+
+(define (square-test a n)
+  (cond ((or (= a 1) (= a (- n 1)))
+         (square a))
+        ((= (remainder (square a) n) 1)
+         0)
+        (else (square a))))
+
+(define (even? n)
+  (= (remainder n 2) 0))
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+         (remainder (square-test (expmod base (/ exp 2) m) m)
+                    m))
+        (else
+          (remainder (* base (expmod base (- exp 1) m))
+                     m))))
+
+(define (mr-test n)
+  (define (try-it a)
+    (= (expmod a (- n 1) n) 1))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-mr-prime? n times)
+  (cond ((= times 0) true)
+        ((mr-test n) (fast-mr-prime? n (- times 1)))
+        (else false)))
+
+(define (fast-prime-checker n)
+  (newline)
+  (display "Checking ")
+  (display n)
+  (display ": ")
+  (display (fast-mr-prime? n 5)))
+
+(fast-prime-checker 561)
+(fast-prime-checker 1105)
+(fast-prime-checker 1729)
+(fast-prime-checker 2465)
+(fast-prime-checker 2821)
+(fast-prime-checker 6601)
+(fast-prime-checker 2127850157)
+(fast-prime-checker 2127850159)
+(fast-prime-checker 3)
