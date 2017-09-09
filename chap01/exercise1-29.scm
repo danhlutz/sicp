@@ -17,17 +17,17 @@
     (if (even? n)
         n
         (+ n 1)))
-  (define (h)
+  (define h
     (/ (- b a) (make-even n)))
   (define (add-h x)
-    (+ x (h)))
+    (+ x h))
   (define (add-2h x)
-    (+ x (* 2.0 (h))))
-  (* (/ (h) 3.0)
+    (+ x (* 2.0 h)))
+  (* (/ h 3.0)
      (+ (sum f a add-h b)
-        (sum f (+ a (h)) add-h (- b (h)))
+        (sum f (+ a h) add-h (- b h))
         (* 2.0
-           (sum f (+ a (h)) add-2h (- b(h)))))))
+           (sum f (+ a h) add-2h (- b h))))))
 
 (define (cube x) (* x x x))
 
