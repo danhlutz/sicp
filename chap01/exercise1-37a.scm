@@ -1,7 +1,6 @@
 (define (cont-frac n d k)
   (cont-frac-rec n d k 1))
 
-
 (define (cont-frac-rec n d k index)
   (let ((n-value (n index))
         (d-value (d index)))

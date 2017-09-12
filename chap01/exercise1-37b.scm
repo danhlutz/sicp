@@ -1,0 +1,27 @@
+(define (cont-frac-iter n d k)
+  (define (iter n d k result)
+    (let ((n-value (n k))
+          (d-value (d k)))
+      (if (= k 0)
+          result
+          (iter n d (- k 1) (/ n-value (+ d-value result))))))
+  (iter n d k 0))
+
+(define (cont-frac n d k)
+  (cont-frac-rec n d k 1))
+
+(define (cont-frac-rec n d k index)
+  (let ((n-value (n index))
+        (d-value (d index)))
+    (if (= k index)
+        (/ n-value d-value)
+        (/ n-value (+ d-value (cont-frac-rec n d k (+ index 1)))))))
+
+(newline)
+(display "Estimating Phi using recursive continuous fraction")
+(newline)
+(display (/ 1.0 (cont-frac (lambda (i) 1) (lambda (i) 1) 50)))
+(newline)
+(display "Estimating Phi using iterative continuous fraction")
+(newline)
+(display (/ 1.0 (cont-frac-iter (lambda (i) 1) (lambda (i) 1) 50)))
