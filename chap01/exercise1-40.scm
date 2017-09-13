@@ -1,0 +1,41 @@
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(define (deriv g)
+  (lambda (x)
+    (/ (- (g (+ x dx)) (g x))
+       dx)))
+
+(define dx 0.00001)
+
+(define (newton-transform g)
+  (lambda (x)
+    (- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+  (fixed-point (newton-transform g) guess))
+
+(define (cubic a b c)
+  (lambda (x)
+    (+ (* x x x)
+       (* a (square x))
+       (* b x)
+       c)))
+
+(newline)
+(display "Example of using a cubic procedure to return a function equal to x^3 + ax^2 + bx + c")
+(newline)
+(display "Newton's method of cubic a = 2, b = 5, c = 100")
+(newline)
+(display (newtons-method (cubic 2 5 100) 1))
+(newline) 
+(display "Plugging results of newtons-method back into the cubic function")
+(newline)
+(display ((cubic 2 5 100) (newtons-method (cubic 2 5 100) 1)))
