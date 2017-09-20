@@ -3,18 +3,17 @@
      (expt 3 b)))
 
 (define (find-base original num-raised)
-  (if (= original num-raised)
-      1
-      (+ 1 (find-base (/ original num-raised)
-                      num-raised))))
+  (define (iter a b result)
+    (if (= a b)
+        result
+        (iter (/ a b) b (+ result 1))))
+  (iter original num-raised 1))
 
 (define (divides? m n)
-  (and (= (remainder m n) 0)
-       (> (/ m n) 0)))
+  (= (gcd m n) n))
 
 (define (car z)
-  (if (and (= (remainder z 3) 0)
-           (> (/ z 3) 0))
+  (if (divides? z 3)
       (car (/ z 3))
       (find-base z 2)))
 
