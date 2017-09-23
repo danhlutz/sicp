@@ -34,3 +34,11 @@
 ; this reduces to
 ; ab(1 - p)(1 - q), ab(1 + p)(1 + q)
 
+(define (mul-interval a b)
+  (let ((p (percent a))
+        (q (percent b))
+        (ca (center a))
+        (cb (center b)))
+    (make-interval (* ca cb (- 1 p) (- 1 q))
+                   (* ca cb (+ 1 p) (+ 1 q)))))
+
