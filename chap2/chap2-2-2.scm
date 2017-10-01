@@ -1,5 +1,22 @@
+(define nil (list))
+
 (define (count-leaves x)
   (cond ((null? x) 0)
         ((not (pair? x)) 1)
         (else (+ (count-leaves (car x))
                  (count-leaves (cdr x))))))
+
+(define (scale-tree-basic tree factor)
+  (cond ((null? tree) nil)
+        ((not (pair? tree)) (* tree factor))
+        (else (cons (scale-tree-basic (car tree) factor)
+                    (scale-tree-basic (cdr tree) factor)))))
+
+(define (scale-tree tree factor)
+  (newline)
+  (display tree)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (scale-tree sub-tree factor)
+             (* sub-tree factor)))
+       tree))
