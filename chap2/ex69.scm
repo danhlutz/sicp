@@ -89,8 +89,6 @@
   (successive-merge (make-leaf-set pairs)))
 
 (define (successive-merge leaf-set)
-  (newline)
-  (display leaf-set)
   (if (= (length leaf-set) 2)
       (make-code-tree (car leaf-set)
                       (cadr leaf-set))
@@ -98,5 +96,3 @@
                                         (cadr leaf-set)))
             (rest (cddr leaf-set)))
         (successive-merge (adjoin-set right-tree rest)))))
-
-
