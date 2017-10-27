@@ -28,5 +28,5 @@
 
 (define (make-from-real-imag x y) (cons x y))
 
-(define (make-from-mag-angle r a)
+(define (make-from-mag-ang r a)
   (cons (* r (cos a)) (* r (sin a))))
