@@ -23,17 +23,19 @@
                 (list op type-tags)))))))
 
 (define (attach-tag type-tag contents)
-  (cons type-tag contents))
+  (if (eq? type-tag 'integer)
+      contents
+      (cons type-tag contents)))
 
 (define (type-tag datum)
-  (if (pair? datum) 
-      (car datum)
-      (error "Bad tagged data -- TYPE-TAG" datum)))
+  (cond ((integer? datum) 'integer) 
+        ((pair? datum) (car datum))
+        (else (error "Bad tagged data -- TYPE-TAG" datum))))
 
 (define (contents datum)
-  (if (pair? datum) 
-      (cdr datum)
-      (error "Bad tagged datum -- CONTENTS" datum)))
+  (cond ((integer? datum) datum) 
+        ((pair? datum) (cdr datum))
+        (else (error "Bad tagged datum -- CONTENTS" datum))))
 
 (define (higher? a b)
   (define (search-tower type1 type2 tower)
