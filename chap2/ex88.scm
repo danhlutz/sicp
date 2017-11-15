@@ -30,9 +30,10 @@
                 (list op type-tags)))))))
 
 (define (attach-tag type-tag contents)
-  (if (eq? type-tag 'integer)
-      contents
-      (cons type-tag contents)))
+  (cond ((eq? type-tag 'integer) contents)
+        ((and (pair? contents) (eq? (car contents) 'scheme-number))
+         contents)
+        (else (cons type-tag contents))))
 
 (define (type-tag datum)
   (cond ((integer? datum) 'integer)
