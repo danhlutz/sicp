@@ -7,7 +7,7 @@
                             (attach-tag
                               'sparse 
                               (list '(3 1) '(0 1)))))
-(define rf (make-rational p2 p1))
+(define rf (make-rational old-p2 old-p1))
 
 (define old-p3 (make-polynomial 'x
                             (attach-tag
