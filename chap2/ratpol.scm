@@ -37,3 +37,13 @@
 (define Q1 (mul p1 p2))
 
 (define Q2 (mul p1 p3))
+
+(define x1 (make-polynomial 'x
+                            (attach-tag 
+                              'sparse
+                              (list '(4 12) '(3 6) '(2 24)))))
+
+(define x2 (make-polynomial 'x
+                            (attach-tag
+                              'sparse
+                              (list '(0 6)))))
