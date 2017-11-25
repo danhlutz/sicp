@@ -1,0 +1,10 @@
+(define (make-monitored f)
+  (let ((calls 0))
+    (lambda (arg)
+      (cond ((eq? arg 'how-many-calls?) calls)
+            ((eq? arg 'reset-count)
+             (begin (set! calls 0)
+                    "calls reset to 0"))
+            (else 
+              (begin (set! calls (+ 1 calls))
+                     (f arg)))))))
