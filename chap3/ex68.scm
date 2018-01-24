@@ -4,6 +4,11 @@
       (stream-ref (stream-cdr s) (- n 1))))
 
 (define (stream-map proc . argstreams)
+  (newline)
+  (display "Mapping: ")
+  (display proc)
+  (display " ")
+  (display argstreams)
   (if (null? (car argstreams))
       the-empty-stream
       (cons-stream
@@ -56,15 +61,12 @@
                   (stream-cdr t))
       (pairs (stream-cdr s) (stream-cdr t)))))
 
-(define (all-pairs s t)
-  (cons-stream
-    (list (stream-car s) (stream-car t))
-    (interleave
-      (all-pairs (stream-cdr s) t)
-      (stream-map (lambda (x) (list (stream-car s) x))
-                  (stream-cdr t)))))
-
 (define (interleave s1 s2)
+  (newline)
+  (display "Interleaving ")
+  (display s1)
+  (display " and ")
+  (display s2)
   (if (stream-null? s1) 
       s2
       (cons-stream (stream-car s1)
@@ -77,31 +79,19 @@
         (iter (stream-cdr stream) (+ count 1))))
   (iter stream 0))
 
-
 (define int-pairs (pairs integers integers))
 
-(define all-ints (all-pairs integers integers))
+(define (louis s t)
+  (newline)
+  (display "louis-ing: ")
+  (display s)
+  (display " and ")
+  (display t)
+  (interleave
+    (stream-map (lambda (x) (list (stream-car x)))
+                t)
+    (louis (stream-cdr s) (stream-cdr t))))
 
-(define (test-times limit)
-  (begin
-    (newline)
-    (display "How long does it take to get to a given pair?")
-    (newline)
-    (display "(list 1 ")
-    (display limit)
-    (display "): ")
-    (display (count-until int-pairs (list 1 limit)))
-    (newline)
-    (display "(list ")
-    (display (- limit 1))
-    (display " ")
-    (display limit)
-    (display "): ")
-    (display (count-until int-pairs (list (- limit 1) limit)))
-    (newline)
-    (display "(list ")
-    (display limit)
-    (display " ")
-    (display limit)
-    (display "): ")
-    (display (count-until int-pairs (list limit limit)))))
+; attempting to (define lints (louis integers integers))
+; hits the maximum recursion depth
+; because it keeps calling itself with the cdrs of s and t 
