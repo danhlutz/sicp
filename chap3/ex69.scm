@@ -83,7 +83,7 @@
 ;        (triples (stream-cdr i) (stream-cdr j) (stream-cdr k))))))
 
 (define (triples i j k)
-  (let ((new-pairs (pairs j k)))
+  (let ((new-pairs (pairs j (stream-cdr k))))
     (cons-stream
       (list (stream-car i) (stream-car j) (stream-car k))
       (interleave
