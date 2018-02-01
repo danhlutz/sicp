@@ -112,3 +112,9 @@
 
 (define pi-estimate
   (estimate-integral in-unit-circle? -1.0 1.0 -1.0 1.0))
+
+(define (under-parabola? x y)
+  (< y (square x)))
+
+(define area-under-parabola
+  (estimate-integral under-parabola? 0.0 3.0 0.0 9.0))
