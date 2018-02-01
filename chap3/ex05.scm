@@ -35,7 +35,7 @@
 (display "10000 trials: ")
 (display (estimate-integral in-unit-circle? -1.0 1.0 -1.0 1.0 10000))
 (newline)
-(display "1000000 trials: ")
-(display (estimate-integral in-unit-circle? -1.0 1.0 -1.0 1.0 1000000))
+;(display "1000000 trials: ")
+;(display (estimate-integral in-unit-circle? -1.0 1.0 -1.0 1.0 1000000))
 
 
