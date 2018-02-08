@@ -217,7 +217,7 @@
 
 (define (let-definitions exp) (cadr exp))
 
-(define (let-body exp) (caddr exp))
+(define (let-body exp) (cddr exp))
 
 (define (let->combination exp)
   (define (let-defs->parameters definitions)
@@ -228,5 +228,12 @@
       cons '() (map cadr definitions)))
   (cons (make-lambda 
           (let-defs->parameters (let-definitions exp))  ; parameters
-          (list (let-body exp)))                               ; body
+          (let-body exp))                               ; body
         (let-defs->values (let-definitions exp))))      ; values
+
+(let->combination
+  '(let ((len (- x2 x1))
+         (wid (- y2 y1)))
+     (newline)
+     (display "area: ")
+     (* len wid)))
