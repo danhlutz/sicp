@@ -1,7 +1,5 @@
-(define version 0.3)
+(define version "0.3")
 ;; re-implement eval using analyze
-;; ?? Do I need to remove the scan-out-defines proc from make-procedure ??
-
 
 (define apply-in-underlying-scheme apply)
 
@@ -18,48 +16,10 @@
         ((lambda? exp) (analyze-lambda exp))
         ((begin? exp) (analyze-sequence (begin-actions exp)))
         ((cond? exp) (analyze (cond->if exp)))
+        ((let? exp) (analyze (let->combination exp)))
         ((application? exp) (analyze-application exp))
         (else 
           (error "Unknown expression type -- ANALYZE" exp))))
-
-;; OLD EVAL
-;(define (eval exp env)
-;  (cond ((self-evaluating? exp) exp)
-;        ((variable? exp) (lookup-variable-value exp env))
-;        ((quoted? exp) (text-of-quotation exp))
-;        ((assignment? exp) (eval-assignment exp env))
-;        ((definition? exp) (eval-definition exp env))
-;        ((if? exp) (eval-if exp env))
-;        ((lambda? exp)
-;         (make-procedure (lambda-parameters exp)
-;                        (lambda-body exp)
-;                         env))
-;        ((begin? exp)
-;         (eval-sequence (begin-actions exp) env))
-;        ((cond? exp) (eval (cond->if exp) env))
-;        ((let? exp) (eval (let->combination exp) env))
-;        ((letrec? exp) (eval (letrec->combination exp) env))
-;        ((and? exp) (eval (and->if exp) env))
-;        ((or? exp) (eval (or->if exp) env))
-;        ((application? exp)
-;         (appl (eval (operator exp) env)
-;                (list-of-values (operands exp) env)))
-;        (else
-;          (error "Unknown expression type -- EVAL" exp))))
-
-;(define (appl procedure arguments)
-;  (cond ((primitive-procedure? procedure)
-;         (apply-primitive-procedure procedure arguments))
-;        ((compound-procedure? procedure)
-;         (eval-sequence
-;           (procedure-body procedure)
-;           (extend-environment
-;             (procedure-parameters procedure)
-;             arguments
-;             (procedure-environment procedure))))
-;        (else
-;          (error
-;            "Unknown procedure type -- APPLY" procedure))))
 
 (define (analyze-application exp)
   (let ((fproc (analyze (operator exp)))
@@ -81,18 +41,11 @@
           (error "Unknown procedure type -- EXECUTE-APPLICATION"
                  proc))))
 
-
 (define (list-of-values exps env)
   (if (no-operands? exps)
       '()
       (cons (eval (first-operand exps) env)
             (list-of-values (rest-operands exps) env))))
-
-; IS THIS NEEDED? 
-;(define (eval-if exp env)
-;  (if (true? (eval (if-predicate exp) env))
-;      (eval (if-consequent exp) env)
-;      (eval (if-alternative exp) env)))
 
 (define (eval-sequence exps env)
   (cond ((last-exp? exps) (eval (first-exp exps) env))
@@ -291,10 +244,6 @@
                  'true
                  (expand (cdr predicates)))))
   (expand (or-predicates exp)))
-
-;; (let <defintiions> <body>)
-;; (let ((param1 val1) (param2 val2) (param3 val3)) <body>)
-;; ((lambda (p1 p2 p3) <body>) val1 val2 val3)
 
 (define (let? exp) (tagged-list? exp 'let))
 
