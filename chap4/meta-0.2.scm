@@ -1,4 +1,4 @@
-;; version 0.2 
+(define version "0.2") 
 ;; added:
 ;; --> internal function definitions using let
 ;; --> letrec
@@ -450,3 +450,33 @@
       (display object)))
 
 (define the-global-environment (setup-environment))
+
+(define (install-packages)
+  (begin
+    (eval '(define (square x) (* x x))
+          the-global-environment)
+    (eval '(define tolerance 0.00001)
+          the-global-environment)
+    (eval '(define (abs x)
+             (if (< x 0)
+                 (- x)
+                 x))
+          the-global-environment)
+    (eval '(define (fixed-point f guess)
+             (if (< (abs (- (f guess) guess)) tolerance)
+                 guess
+                 (fixed-point f (f guess))))
+          the-global-environment)
+    (eval '(define (sqrt x)
+             (fixed-point (lambda (n) (/ (+ n (/ x n)) 2)) 1.0))
+          the-global-environment)))
+
+(define (start)
+  (begin
+    (display "loading DAN-SCHEME version ")
+    (display version)
+    (newline)
+    (display "installing packages ...")
+    (install-packages)
+    (driver-loop)))
+
