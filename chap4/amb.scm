@@ -500,6 +500,9 @@
         (list 'newline newline)
         (list 'remainder remainder)
         (list 'quotient quotient)
+        (list 'list list)
+        (list 'abs abs)
+        (list 'member member)
         (list 'expt expt)))
 
 (define (primitive-procedure-names)
@@ -573,9 +576,6 @@
 (define (install-packages)
   (interpret '(define (require p)
                (if (not p) (amb))))
-  (interpret '(define (an-element-of items)
-               (require (not (null? items)))
-               (amb (car items) (an-element-of (cdr items)))))
 )
 
 (define (start)
