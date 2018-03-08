@@ -503,6 +503,7 @@
         (list 'list list)
         (list 'abs abs)
         (list 'member member)
+        (list 'real-time-clock real-time-clock)
         (list 'expt expt)))
 
 (define (primitive-procedure-names)
