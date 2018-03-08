@@ -42,6 +42,7 @@
        (require (not (= cooper 1)))
        (require (not (= fletch 5)))
        (require (not (= fletch 1)))
+       (require (not (= (abs (- fletch cooper)) 1)))
        (require (> miller cooper))
        (list (list 'baker baker)
              (list 'cooper cooper)
@@ -52,3 +53,7 @@
 (start)
 
 ;; There are 15 solutions to (modified-multiple-dwelling). try it and see!
+
+;; i made a mistake the first time I ran this. I removed both 
+;; adjacent floor rules. By adding back one of them, there are now 
+;; 5 solutions
