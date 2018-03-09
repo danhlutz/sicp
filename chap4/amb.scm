@@ -605,6 +605,11 @@
 (define (install-packages)
   (interpret '(define (require p)
                (if (not p) (amb))))
+  (interpret
+    '(define (time-it proc)
+       (let ((start (real-time-clock)))
+         (begin (proc)
+                (- (real-time-clock) start)))))
 )
 
 (define (start)
