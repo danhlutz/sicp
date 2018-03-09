@@ -16,6 +16,8 @@
         ((lambda? exp) (analyze-lambda exp))
         ((begin? exp) (analyze-sequence (begin-actions exp)))
         ((cond? exp) (analyze (cond->if exp)))
+        ((and? exp) (analyze (and->if exp)))
+        ((or? exp) (analyze (or->if exp)))
         ((let? exp) (analyze (let->combination exp)))
         ((amb? exp) (analyze-amb exp))
         ((application? exp) (analyze-application exp))
@@ -202,6 +204,32 @@
 
 (define (make-if predicate consequent alternative)
   (list 'if predicate consequent alternative))
+
+(define (and? exp) (tagged-list? exp 'and))
+
+(define (and-predicates exp) (cdr exp))
+
+(define (and->if exp)
+  (define (expand predicates)
+    (if (= (length predicates) 1)
+        (make-if (car predicates) 'true 'false)
+        (make-if (car predicates)
+                 (expand (cdr predicates))
+                 'false)))
+  (expand (and-predicates exp)))
+
+(define (or? exp) (tagged-list? exp 'or))
+
+(define (or-predicates exp) (cdr exp))
+
+(define (or->if exp)
+  (define (expand predicates)
+    (if (= (length predicates) 1)
+        (make-if (car predicates) 'true 'false)
+        (make-if (car-predicates)
+                 'true
+                 (expand (cdr predicates)))))
+  (expand (or-predicates exp)))
 
 (define (begin? exp) (tagged-list? exp 'begin))
 
