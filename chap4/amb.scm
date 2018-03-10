@@ -523,6 +523,7 @@
         (list '= =)
         (list '< <)
         (list '> >)
+        (list 'equal? equal?)
         (list 'not not)
         (list 'display display)
         (list 'newline newline)
@@ -610,6 +611,12 @@
        (let ((start (real-time-clock)))
          (begin (proc)
                 (- (real-time-clock) start)))))
+  (interpret
+    '(define (map proc items)
+       (if (null? items)
+           '()
+           (cons (proc (car items))
+                 (map proc (cdr items))))))
 )
 
 (define (start)
