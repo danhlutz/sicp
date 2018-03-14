@@ -68,5 +68,3 @@
      (let ((sent (parse-sentence)))
        (require (null? *unparsed*))
        sent)))
-
-(start)
