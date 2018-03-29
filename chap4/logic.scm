@@ -462,10 +462,13 @@
     (display "Assertion added to data base.")
     'ok))
 
+(define (make-assertion exp)
+  (list 'assert! exp))
+
 (define (populate-db exps)
   (if (null? exps)
       'done
-      (let ((first-exp (car exps))
+      (let ((first-exp (make-assertion (car exps)))
             (rest-exps (cdr exps)))
         (add-db-entry first-exp)
         (populate-db rest-exps))))
