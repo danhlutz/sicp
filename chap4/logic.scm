@@ -96,10 +96,11 @@
   (stream-flatmap
     (lambda (frame)
       (if (execute
-            call
-            frame
-            (lambda (v f)
-              (error "Unknown pat var -- LISP-VALUE" v)))
+            (instantiate
+              call
+              frame
+              (lambda (v f)
+                (error "Unknown pat var -- LISP-VALUE" v))))
           (singleton-stream frame)
           the-empty-stream))
     frame-stream))
