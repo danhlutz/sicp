@@ -393,7 +393,7 @@
 
 (define (rule-body rule)
   (if (null? (cddr rule))
-      '(always true)
+      '(always-true)
       (caddr rule)))
 
 (define (query-syntax-process exp)
