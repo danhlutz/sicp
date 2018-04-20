@@ -132,18 +132,14 @@
         (cdr text)
         (lambda (insts labels)
           (let ((next-inst (car text)))
-            (cond ((and (symbol? next-inst)
-                        (assoc next-inst labels))
-                   (error "Label re-used -- EXTRACT LABELS" next-inst))
-                  ((symbol? next-inst)
-                   (receive insts
-                            (cons (make-label-entry next-inst
-                                                    insts)
-                                  labels)))
-                  (else
-                    (receive (cons (make-instruction next-inst)
-                                                     insts)
-                                   labels))))))))
+            (if (symbol? next-inst)
+                (receive insts
+                         (cons (make-label-entry next-inst
+                                                 insts)
+                               labels))
+                (receive (cons (make-instruction next-inst)
+                               insts)
+                         labels)))))))
 
 (define (update-insts! insts labels machine)
   (let ((pc (get-register machine 'pc))
