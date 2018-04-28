@@ -1,5 +1,5 @@
-(define version "0.3.5")
-(define description "Trace registers")
+(define version "0.3.6")
+(define description "Set breakpoints")
 
 (define (make-machine register-names ops controller-text)
   (let ((machine (make-new-machine)))
@@ -23,11 +23,17 @@
     (define (set-contents! value)
       (begin (trace-register contents value)
              (set! contents value)))
+    (define (trace-on)
+      (set! tracing true)
+      'tracing-ON)
+    (define (trace-off)
+      (set! tracing false)
+      'tracing-OFF)
     (define (dispatch message)
       (cond ((eq? message 'get) contents)
             ((eq? message 'set) set-contents!)
-            ((eq? message 'trace-on) (set! tracing true))
-            ((eq? message 'trace-off) (set! tracing false))
+            ((eq? message 'trace-on) (trace-on))
+            ((eq? message 'trace-off) (trace-off))
             (else
               (error "Unknown request -- REGISTER" message))))
     dispatch))
@@ -138,8 +144,12 @@
         (set! instruction-count 0)
         'done))
    (define (print-instruction inst)
-     (if instruction-tracing
-         (begin (newline) (display (instruction-text inst)))))
+     (if instruction-tracing 
+         (begin (if (= (instruction-position inst) 0)
+                    (begin (newline)
+                           (display (instruction-label inst))))
+                (newline) 
+                (display (instruction-text inst)))))
    (define (trace-on) 
      (set! instruction-tracing true)
      (begin (newline)
@@ -224,11 +234,21 @@
 ;; THE ASSEMBLER
 
 (define (assemble controller-text machine)
-  (extract-labels 
-    controller-text
-    (lambda (insts labels)
-      (update-insts! insts labels machine)
-      insts)))
+  (define (scan text label position)
+    (cond ((null? text) '())
+          ((symbol? (car text))
+           (cons (car text)
+                 (scan (cdr text) (car text) 0)))
+          (else
+            (cons (make-labeled-instruction
+                    (car text) label position)
+                  (scan (cdr text) label (+ 1 position))))))
+  (let ((labeled-instructions (scan controller-text '*start* 0)))
+    (extract-labels 
+      labeled-instructions
+      (lambda (insts labels)
+        (update-insts! insts labels machine)
+        insts))))
 
 (define (extract-labels text receive)
   (if (null? text)
@@ -246,8 +266,7 @@
                                                     insts)
                                   labels)))
                   (else
-                    (receive (cons (make-instruction next-inst)
-                                                     insts)
+                    (receive (cons next-inst insts)
                                    labels))))))))
 
 (define (update-insts! insts labels machine)
@@ -264,17 +283,18 @@
             pc flag stack ops)))
       insts)))
 
-(define (make-instruction text)
-  (cons text '()))
+(define (make-labeled-instruction text label position)
+  (list text label position '()))
 
-(define (instruction-text inst)
-  (car inst))
+(define (instruction-text inst) (car inst))
+(define (instruction-label inst) (cadr inst))
+(define (instruction-position inst) (caddr inst))
 
 (define (instruction-execution-proc inst)
-  (cdr inst))
+  (cdddr inst))
 
 (define (set-instruction-execution-proc! inst proc)
-  (set-cdr! inst proc))
+  (set-cdr! (cddr inst) proc))
 
 (define (make-label-entry label-name insts)
   (cons label-name insts))
@@ -521,6 +541,12 @@
 
 (define (add-assignment! inst machine)
   ((machine 'add-to-assignment-table!) inst))
+
+(define (trace-register machine register-name)
+  ((machine 'trace-register) register-name 'trace-on))
+
+(define (trace-register-off machine register-name)
+  ((machine 'trace-register) register-name 'trace-off))
 
 ;; DESCRIBE MACHINE
 
