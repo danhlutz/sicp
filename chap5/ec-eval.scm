@@ -236,6 +236,25 @@
 (define (make-if predicate consequent alternative)
   (list 'if predicate consequent alternative))
 
+(define (let? exp) (tagged-list? exp 'let))
+
+(define (let-body exp) (cddr exp))
+
+(define (let-definitions exp) (cadr exp))
+
+(define (let-parameters let-defs)
+  (map car let-defs))
+
+(define (let-values let-defs)
+  (map cadr let-defs))
+
+(define (let->lambda exp)
+  (let ((definitions (let-definitions exp)))
+    (let ((params (let-parameters definitions))
+          (values (let-values definitions)))
+      (cons (make-lambda params (let-body exp))
+            values))))
+
 ;; ERROR MESSAGES
 (define unknown-expression-type-error
   "Unknown expression type -- ECEVAL")
@@ -326,6 +345,8 @@
         (list 'exit? exit?)
         (list 'cond? cond?)
         (list 'cond->if cond->if)
+        (list 'let? let?)
+        (list 'let->lambda let->lambda)
           ))
 
 (define eceval
@@ -377,6 +398,8 @@
         (branch (label ev-done))
         (test (op cond?) (reg exp))
         (branch (label ev-cond))
+        (test (op let?) (reg exp))
+        (branch (label ev-let))
         (test (op application?) (reg exp))
         (branch (label ev-application))
         (goto (label unknown-expression-type))
@@ -495,6 +518,9 @@
         (goto (label eval-dispatch))
       ev-cond
         (assign exp (op cond->if) (reg exp))
+        (goto (label eval-dispatch))
+      ev-let
+        (assign exp (op let->lambda) (reg exp))
         (goto (label eval-dispatch))
       ev-assignment
         (assign unev (op assignment-variable) (reg exp))
