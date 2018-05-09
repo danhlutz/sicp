@@ -217,6 +217,8 @@
 (define (prompt-for-input string)
   (newline) (newline) (display string) (newline))
 
+(define (exit? exp) (tagged-list? exp 'exit))
+
 ;; MACHINE HELPERS
 
 (define (empty-arglist) '())
@@ -282,6 +284,7 @@
         (list 'announce-output announce-output)
         (list 'user-print user-print)
         (list 'prompt-for-input prompt-for-input)
+        (list 'exit? exit?)
           ))
 
 (define eceval
@@ -329,6 +332,8 @@
         (branch (label ev-lambda))
         (test (op begin?) (reg exp))
         (branch (label ev-begin))
+        (test (op exit?) (reg exp))
+        (branch (label ev-done))
         (test (op application?) (reg exp))
         (branch (label ev-application))
         (goto (label unknown-expression-type))
@@ -477,5 +482,7 @@
           (op define-variable!) (reg unev) (reg val) (reg env))
         (assign val (const ok))
         (goto (reg continue))
+      ev-done
+        (perform (op announce-output) (const "Quitting evaluator"))
       )))
 
