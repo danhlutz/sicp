@@ -421,17 +421,25 @@
         (goto (reg continue))
       ev-application
         (save continue)
-        (save env)
+        ; (save env)   ;; MOVED
         (assign unev (op operands) (reg exp))
-        (save unev)
+        ; (save unev) ;; MOVED
         (assign exp (op operator) (reg exp))
+        (test (op variable?) (reg exp)) ;; if this passes branch 
+        (branch (label ev-appl-symbol-op))
         (assign continue (label ev-appl-did-operator))
+        (save env)
+        (save unev)
         (goto (label eval-dispatch))
+      ev-appl-symbol-op
+        (assign proc (op lookup-variable-value) (reg exp) (reg env))
+        (goto (label ev-appl-looked-up-operator))
       ev-appl-did-operator
         (restore unev)  ;; the operands
         (restore env)
-        (assign argl (op empty-arglist))
         (assign proc (reg val))
+      ev-appl-looked-up-operator
+        (assign argl (op empty-arglist))
         (test (op no-operands?) (reg unev))
         (branch (label apply-dispatch))
         (save proc)
