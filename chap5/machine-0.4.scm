@@ -512,6 +512,7 @@
   (define (scan operands)
     (cond ((null? operands) true)
           ((or (register-exp? (car operands))
+               (label-exp? (car operands))
                (constant-exp? (car operands)))
            (scan (cdr operands)))
           (else
