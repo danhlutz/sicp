@@ -322,6 +322,7 @@
                            target
                            linkage))
         ((cond? exp) (compile (cond->if exp) target linkage))
+        ((let? exp) (compile (let->lambda exp) target linkage))
         ((simple-op? exp) (compile-simple-op exp target linkage))
         ((application? exp)
          (compile-application exp target linkage))
