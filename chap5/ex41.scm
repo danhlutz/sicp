@@ -360,7 +360,7 @@
 
 (define (find-variable var ct-env)
   (define (iter var ct-env address)
-    (if (null? ct-env) 
+    (if (eq? ct-env the-empty-compile-time-environment) 
         'not-found
         (let ((first-frame (car ct-env)))
           (cond ((null? first-frame)
@@ -373,6 +373,8 @@
                     (cons (cdr (car ct-env)) (cdr ct-env))
                     (make-address (car address) (+ (cadr address) 1))))))))
   (iter var ct-env (make-address 0 0)))
+
+(define the-empty-compile-time-environment '())
 
 ;; THE COMPILER
 
@@ -870,7 +872,7 @@
 
 
 (define (compile-with-env exp)
-  (let ((ct-env (frame-variables (first-frame (get-global-environment)))))
+  (let ((ct-env the-empty-compile-time-environment))
     (append-instruction-sequences
       (make-instruction-sequence
         '()
